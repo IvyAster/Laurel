@@ -1,5 +1,3 @@
-
-
 diesel::table! {
     use diesel::sql_types::*;
 
@@ -24,7 +22,7 @@ diesel::table! {
     }
 }
 
-diesel::table!{
+diesel::table! {
     use diesel::sql_types::*;
 
     menu(id){
@@ -56,7 +54,7 @@ diesel::table!{
     }
 }
 
-diesel::table!{
+diesel::table! {
     use diesel::sql_types::*;
     role(id){
         id -> Int8,
@@ -74,7 +72,7 @@ diesel::table!{
     }
 }
 
-diesel::table!{
+diesel::table! {
     use diesel::sql_types::*;
     dict(id){
         id -> Int8,
@@ -91,7 +89,7 @@ diesel::table!{
     }
 }
 
-diesel::table!{
+diesel::table! {
     use diesel::sql_types::*;
     dict_value(id){
         id -> Int8,
@@ -110,8 +108,8 @@ diesel::table!{
     }
 }
 
-diesel::allow_tables_to_appear_in_same_query!(micro_app, );
-diesel::allow_tables_to_appear_in_same_query!(menu, );
-diesel::allow_tables_to_appear_in_same_query!(role, );
-diesel::allow_tables_to_appear_in_same_query!(dict, );
-diesel::allow_tables_to_appear_in_same_query!(dict_value, );
+diesel::allow_tables_to_appear_in_same_query!(micro_app,);
+diesel::allow_tables_to_appear_in_same_query!(menu,);
+diesel::allow_tables_to_appear_in_same_query!(role,);
+diesel::allow_tables_to_appear_in_same_query!(dict,);
+diesel::allow_tables_to_appear_in_same_query!(dict_value,);

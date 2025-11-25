@@ -1,8 +1,11 @@
-use actix_web::{get, post, web};
-use laurel_actix::types::{Autowired, Done, RequestBody, RequestParam, LR};
-use laurel_common::types::Pagination;
-use crate::model::dict_model::{DictCreateReq, DictDeleteReq, DictQueryReq, DictUpdateReq, DictValueCreateReq, DictValueDeleteReq, DictValueQueryReq, DictValueUpdateReq, DictValueVo, DictVo};
+use crate::model::dict_model::{
+    DictCreateReq, DictDeleteReq, DictQueryReq, DictUpdateReq, DictValueCreateReq,
+    DictValueDeleteReq, DictValueQueryReq, DictValueUpdateReq, DictValueVo, DictVo,
+};
 use crate::service::dict_service::DictService;
+use actix_web::{get, post, web};
+use laurel_actix::types::{Autowired, Done, LR, RequestBody, RequestParam};
+use laurel_common::types::Pagination;
 
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.service(
@@ -11,14 +14,12 @@ pub fn config(cfg: &mut web::ServiceConfig) {
             .service(create_dict)
             .service(update_dict)
             .service(delete_dict)
-
             .service(page_dict_values)
             .service(create_dict_value)
             .service(update_dict_value)
-            .service(delete_dict_value)
+            .service(delete_dict_value),
     );
 }
-
 
 #[utoipa::path(
     get,
@@ -33,18 +34,16 @@ pub fn config(cfg: &mut web::ServiceConfig) {
 #[get("/pages")]
 async fn page_dict(
     dict_service: Autowired<DictService>,
-    query: RequestParam<DictQueryReq>
-) -> Done<Pagination<DictVo>>{
+    query: RequestParam<DictQueryReq>,
+) -> Done<Pagination<DictVo>> {
     let (page, size) = match &query.page {
         Some(p) => (p.page, p.size),
         _ => (1, 15),
     };
 
-    Ok(
-        LR::of(
-            dict_service.page_dict(&query, page, size).await?.to()
-        )
-    )
+    Ok(LR::of(
+        dict_service.page_dict(&query, page, size).await?.to(),
+    ))
 }
 
 #[utoipa::path(
@@ -58,13 +57,9 @@ async fn page_dict(
 #[post("/create")]
 async fn create_dict(
     dict_service: Autowired<DictService>,
-    body: RequestBody<DictCreateReq>
-) -> Done<DictVo>{
-    Ok(
-        LR::of(
-            dict_service.create_dict(&body).await?.into()
-        )
-    )
+    body: RequestBody<DictCreateReq>,
+) -> Done<DictVo> {
+    Ok(LR::of(dict_service.create_dict(&body).await?.into()))
 }
 
 #[utoipa::path(
@@ -78,15 +73,16 @@ async fn create_dict(
 #[post("/update")]
 async fn update_dict(
     dict_service: Autowired<DictService>,
-    body: RequestBody<DictUpdateReq>
-) -> Done<DictVo>{
-    Ok(
-        LR::of_raw(
-            dict_service.update_dict(&body).await?.map(|d| d.into()).or(None)
-        )
-    )
+    body: RequestBody<DictUpdateReq>,
+) -> Done<DictVo> {
+    Ok(LR::of_raw(
+        dict_service
+            .update_dict(&body)
+            .await?
+            .map(|d| d.into())
+            .or(None),
+    ))
 }
-
 
 #[utoipa::path(
     post,
@@ -96,17 +92,18 @@ async fn update_dict(
         (status = 200, description = "删除字典", body = DictVo)
     )
 )]
-
 #[post("/delete")]
 async fn delete_dict(
     dict_service: Autowired<DictService>,
-    body: RequestBody<DictDeleteReq>
-) -> Done<DictVo>{
-    Ok(
-        LR::of_raw(
-            dict_service.delete_dict(&body).await?.map(|d| d.into()).or(None)
-        )
-    )
+    body: RequestBody<DictDeleteReq>,
+) -> Done<DictVo> {
+    Ok(LR::of_raw(
+        dict_service
+            .delete_dict(&body)
+            .await?
+            .map(|d| d.into())
+            .or(None),
+    ))
 }
 
 #[utoipa::path(
@@ -122,17 +119,15 @@ async fn delete_dict(
 #[get("/value/pages")]
 async fn page_dict_values(
     dict_service: Autowired<DictService>,
-    query: RequestParam<DictValueQueryReq>
-) -> Done<Pagination<DictValueVo>>{
+    query: RequestParam<DictValueQueryReq>,
+) -> Done<Pagination<DictValueVo>> {
     let (page, size) = match &query.page {
         Some(p) => (p.page, p.size),
         _ => (1, 15),
     };
-    Ok(
-        LR::of(
-            dict_service.page_values(&query, page, size).await?.to()
-        )
-    )
+    Ok(LR::of(
+        dict_service.page_values(&query, page, size).await?.to(),
+    ))
 }
 
 #[utoipa::path(
@@ -146,13 +141,9 @@ async fn page_dict_values(
 #[post("/value/create")]
 async fn create_dict_value(
     dict_service: Autowired<DictService>,
-    body: RequestBody<DictValueCreateReq>
-) -> Done<DictValueVo>{
-    Ok(
-        LR::of(
-            dict_service.create_value(&body).await?.into()
-        )
-    )
+    body: RequestBody<DictValueCreateReq>,
+) -> Done<DictValueVo> {
+    Ok(LR::of(dict_service.create_value(&body).await?.into()))
 }
 
 #[utoipa::path(
@@ -166,13 +157,15 @@ async fn create_dict_value(
 #[post("/value/update")]
 async fn update_dict_value(
     dict_service: Autowired<DictService>,
-    body: RequestBody<DictValueUpdateReq>
-) -> Done<DictValueVo>{
-    Ok(
-        LR::of_raw(
-            dict_service.update_value(&body).await?.map(|d| d.into()).or(None)
-        )
-    )
+    body: RequestBody<DictValueUpdateReq>,
+) -> Done<DictValueVo> {
+    Ok(LR::of_raw(
+        dict_service
+            .update_value(&body)
+            .await?
+            .map(|d| d.into())
+            .or(None),
+    ))
 }
 
 #[utoipa::path(
@@ -186,11 +179,13 @@ async fn update_dict_value(
 #[post("/value/delete")]
 async fn delete_dict_value(
     dict_service: Autowired<DictService>,
-    body: RequestBody<DictValueDeleteReq>
-) -> Done<DictValueVo>{
-    Ok(
-        LR::of_raw(
-            dict_service.delete_value(&body).await?.map(|d| d.into()).or(None)
-        )
-    )
+    body: RequestBody<DictValueDeleteReq>,
+) -> Done<DictValueVo> {
+    Ok(LR::of_raw(
+        dict_service
+            .delete_value(&body)
+            .await?
+            .map(|d| d.into())
+            .or(None),
+    ))
 }

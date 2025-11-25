@@ -1,14 +1,14 @@
+use crate::model::fe_micro_service_model as FeMicroServiceModel;
+use crate::model::fe_micro_service_model::FeMicroService;
+use crate::repository::AsyncDsl;
+use crate::schema::schema::fe_micro_service as FeMicroServiceSchema;
+use crate::schema::schema::fe_micro_service::dsl as MicroServiceDsl;
 use diesel::associations::HasTable;
 use diesel::prelude::*;
 use diesel_async::*;
 use laurel_actix::types::Running;
 use laurel_common::types::Pagination;
 use laurel_pg::DbPool;
-use crate::model::fe_micro_service_model as FeMicroServiceModel;
-use crate::model::fe_micro_service_model::FeMicroService;
-use crate::repository::AsyncDsl;
-use crate::schema::schema::fe_micro_service as FeMicroServiceSchema;
-use crate::schema::schema::fe_micro_service::dsl as MicroServiceDsl;
 
 #[derive(Clone, Debug)]
 pub struct FeMicroServiceRepository {
@@ -73,7 +73,7 @@ impl FeMicroServiceRepository {
     pub async fn list_services_with_state(
         &self,
         app_id: &str,
-        service_status: &str
+        service_status: &str,
     ) -> Running<Vec<FeMicroServiceModel::FeMicroService>> {
         let mut conn = self.pool.get().await?;
         let apps = AsyncDsl::load(
@@ -84,7 +84,7 @@ impl FeMicroServiceRepository {
                 .select(FeMicroServiceModel::FeMicroService::as_select()),
             &mut conn,
         )
-            .await?;
+        .await?;
         Ok(apps)
     }
 
@@ -92,7 +92,7 @@ impl FeMicroServiceRepository {
         &self,
         query: &FeMicroServiceModel::FeMicroServiceQuery,
         page: u32,
-        size: u32
+        size: u32,
     ) -> Running<Pagination<FeMicroServiceModel::FeMicroService>> {
         let mut conn = self.pool.get().await?;
         let total = AsyncDsl::get_result::<i64>(

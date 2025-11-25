@@ -46,18 +46,17 @@ pub struct SystemApiConfig {
 async fn main() -> std::io::Result<()> {
     let (app_config, pool, redis) = setup().await;
     HttpServer::new(move || {
-        let mut app = ActixApp!()
-            .configure(routes::config)
-            .configure(|cfg| {
-                setup::components_setup::load_components(
-                    cfg,
-                    &app_config.api_config,
-                    pool.clone(),
-                    redis.clone(),
-                )
-            });
+        let mut app = ActixApp!().configure(routes::config).configure(|cfg| {
+            setup::components_setup::load_components(
+                cfg,
+                &app_config.api_config,
+                pool.clone(),
+                redis.clone(),
+            )
+        });
 
-        #[cfg(feature = "use_api_docs")]{
+        #[cfg(feature = "use_api_docs")]
+        {
             app = app.service(
                 SwaggerUi::new("/swagger-ui/{_:.*}")
                     .url("/api-docs/openapi.json", DictApiDoc::openapi()),

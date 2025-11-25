@@ -1,12 +1,12 @@
-use chrono::{NaiveDateTime};
+use chrono::NaiveDateTime;
 use diesel::{Identifiable, Queryable, Selectable};
-use serde::{Deserialize, Serialize};
 use laurel_uc_api::account_api::AccountBo;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Queryable, Selectable, Identifiable)]
 #[diesel(table_name = crate::schema::schema::account)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
-pub struct AccountEntity{
+pub struct AccountEntity {
     /// 自增id
     pub id: i64,
 
@@ -27,8 +27,7 @@ pub struct AccountEntity{
 
 #[derive(Deserialize, Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct AccountLoginVo{
-
+pub struct AccountLoginVo {
     pub account: String,
 
     pub password: String,
@@ -42,7 +41,7 @@ pub struct AccountLoginVo{
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct AccountVo{
+pub struct AccountVo {
     pub account_id: String,
 
     pub account_name: String,
@@ -58,10 +57,10 @@ pub struct AccountVo{
     pub uts: String,
 }
 
-impl From<AccountEntity> for AccountVo{
+impl From<AccountEntity> for AccountVo {
     fn from(entity: AccountEntity) -> Self {
         let ts_formatter = "%Y-%m-%d %H:%M:%S";
-        AccountVo{
+        AccountVo {
             account_id: entity.account_id,
             account_name: entity.account_name,
             account_state: entity.account_state,
@@ -90,10 +89,10 @@ impl From<AccountEntity> for AccountVo{
 //     pub uts: String,
 // }
 
-impl From<AccountEntity> for AccountBo{
+impl From<AccountEntity> for AccountBo {
     fn from(entity: AccountEntity) -> Self {
         let ts_formatter = "%Y-%m-%d %H:%M:%S";
-        AccountBo{
+        AccountBo {
             account_id: entity.account_id,
             account_name: entity.account_name,
             account_state: entity.account_state,
@@ -106,14 +105,14 @@ impl From<AccountEntity> for AccountBo{
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct LoginVo{
+pub struct LoginVo {
     pub account: AccountVo,
     pub token: String,
 }
 
-impl From<(AccountEntity, String)> for LoginVo{
+impl From<(AccountEntity, String)> for LoginVo {
     fn from(value: (AccountEntity, String)) -> Self {
-        LoginVo{
+        LoginVo {
             account: value.0.into(),
             token: value.1,
         }
@@ -122,8 +121,7 @@ impl From<(AccountEntity, String)> for LoginVo{
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct AccountQuery{
-
+pub struct AccountQuery {
     pub account_id: Option<String>,
 
     pub account_name: Option<String>,

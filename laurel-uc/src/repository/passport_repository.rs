@@ -1,25 +1,21 @@
 use crate::model::passport_model::PassportEntity;
 use crate::schema::schema::passport::dsl as PassportDsl;
-use diesel_async::{RunQueryDsl};
 use diesel::prelude::*;
+use diesel_async::RunQueryDsl;
 use laurel_actix::types::Running;
 use laurel_pg::DbPool;
 
 #[derive(Clone, Debug)]
-pub struct PassportRepository{
-    pool: DbPool
+pub struct PassportRepository {
+    pool: DbPool,
 }
-
-
 
 impl PassportRepository {
     pub fn new(pool: DbPool) -> Self {
-        Self {
-            pool
-        }
+        Self { pool }
     }
 
-    pub async fn find(&self, account_id: &str) -> Running<Option<PassportEntity>>{
+    pub async fn find(&self, account_id: &str) -> Running<Option<PassportEntity>> {
         let mut conn = self.pool.get().await?;
         let passport = PassportDsl::passport
             .filter(PassportDsl::account_id.eq(account_id))

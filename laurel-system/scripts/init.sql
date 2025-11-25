@@ -120,7 +120,7 @@ CREATE TABLE dict_value
     dict_id    VARCHAR(64)  NOT NULL,
     value_id   VARCHAR(64)  NOT NULL,
     value_name VARCHAR(200) NOT NULL,
-    value_mark  TEXT                  DEFAULT NULL,
+    value_mark TEXT                  DEFAULT NULL,
     weight     INTEGER      NOT NULL,
     dict_type  VARCHAR(40)  NOT NULL,
     cts        TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,

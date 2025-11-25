@@ -18,11 +18,11 @@ docker rmi "${IMAGE_NAME}:${IMAGE_TAG}" --force
 docker build \
     -t "${IMAGE_NAME}:${IMAGE_TAG}" \
     -f "$DOCKERFILE" \
-    --build-arg APP_NAME=${1}\
+    --build-arg APP_NAME="${1}" \
     .
 
 echo "✅ 构建完成!"
-echo "镜像大小: $(docker images ${IMAGE_NAME}:${IMAGE_TAG} --format "table {{.Size}}" | tail -n 1)"
+echo "镜像大小: $(docker images "${IMAGE_NAME}":"${IMAGE_TAG}" --format "table {{.Size}}" | tail -n 1)"
 
 # 运行测试（可选）
 #read -p "是否测试镜像? (y/n) " -n 1 -r

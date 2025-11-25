@@ -4,8 +4,7 @@ use crate::schema::schema::menu as MenuSchema;
 use crate::schema::schema::menu::dsl as MenuDsl;
 use diesel::associations::HasTable;
 use diesel::{
-    ExpressionMethods, OptionalExtension, PgTextExpressionMethods, QueryDsl,
-    SelectableHelper,
+    ExpressionMethods, OptionalExtension, PgTextExpressionMethods, QueryDsl, SelectableHelper,
 };
 use diesel_async::*;
 use laurel_actix::types::Running;

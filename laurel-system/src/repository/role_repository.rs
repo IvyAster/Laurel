@@ -32,8 +32,7 @@ impl RoleRepository {
         Ok(role)
     }
 
-
-    pub async fn save<'a>(&self, insertable: &InsertableRole<'a>) -> Running<Role>{
+    pub async fn save<'a>(&self, insertable: &InsertableRole<'a>) -> Running<Role> {
         let mut conn = self.pool.get().await?;
         let role = conn
             .transaction::<Role, anyhow::Error, _>(|mut tx| {
@@ -44,7 +43,7 @@ impl RoleRepository {
                             .returning(Role::as_returning()),
                         &mut tx,
                     )
-                        .await?;
+                    .await?;
                     Ok(role)
                 })
             })
@@ -52,7 +51,7 @@ impl RoleRepository {
         Ok(role)
     }
 
-    pub async fn update(&self, role_id: &str, updatable: &UpdatableRole) -> Running<Option<Role>>{
+    pub async fn update(&self, role_id: &str, updatable: &UpdatableRole) -> Running<Option<Role>> {
         let mut conn = self.pool.get().await?;
         let role = conn
             .transaction::<Option<Role>, anyhow::Error, _>(|mut tx| {
@@ -64,8 +63,8 @@ impl RoleRepository {
                             .returning(Role::as_returning()),
                         &mut tx,
                     )
-                        .await
-                        .optional()?;
+                    .await
+                    .optional()?;
                     Ok(role)
                 })
             })

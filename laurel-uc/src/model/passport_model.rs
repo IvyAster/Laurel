@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Serialize, Deserialize, Queryable, Selectable, Identifiable)]
 #[diesel(table_name = crate::schema::schema::passport)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
-pub struct PassportEntity{
+pub struct PassportEntity {
     /// 自增id
     pub id: i64,
 

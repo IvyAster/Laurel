@@ -1,11 +1,11 @@
 use crate::model::account_model::AccountQuery;
 use crate::service::account_service::AccountService;
 use actix_web::{get, web};
-use laurel_uc_api::account_api::{AccountBo, TokenParseQuery, TokenPayloadBo};
-use tracing::error;
 use laurel_actix::error::AppError;
 use laurel_actix::handler::TokenHandler;
-use laurel_actix::types::{Autowired, Done, RequestParam, LR};
+use laurel_actix::types::{Autowired, Done, LR, RequestParam};
+use laurel_uc_api::account_api::{AccountBo, TokenParseQuery, TokenPayloadBo};
+use tracing::error;
 
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.service(
@@ -31,9 +31,7 @@ async fn find_account(
     } else {
         None
     };
-    Ok(LR::of_raw(
-        account.map(|e| e.into()).or(None),
-    ))
+    Ok(LR::of_raw(account.map(|e| e.into()).or(None)))
 }
 
 #[get("/token")]

@@ -25,22 +25,26 @@ impl DictRepository {
         DictRepository { pool }
     }
 
-    pub async fn count_dict(&self, dict_id: &str) -> Running<i64>{
+    pub async fn count_dict(&self, dict_id: &str) -> Running<i64> {
         let mut conn = self.pool.get().await?;
         let total = AsyncDsl::get_result::<i64>(
             DictDsl::dict.filter(DictDsl::dict_id.eq(dict_id)).count(),
-            &mut conn
-        ).await?;
+            &mut conn,
+        )
+        .await?;
         Ok(total)
     }
 
-    pub async fn find_dict(&self, id: i64) -> Running<Option<Dict>>{
+    pub async fn find_dict(&self, id: i64) -> Running<Option<Dict>> {
         let mut conn = self.pool.get().await?;
         let dict = AsyncDsl::first(
-            DictDsl::dict.filter(DictDsl::id.eq(id)).select(Dict::as_returning()),
+            DictDsl::dict
+                .filter(DictDsl::id.eq(id))
+                .select(Dict::as_returning()),
             &mut conn,
         )
-            .await.optional()?;
+        .await
+        .optional()?;
         Ok(dict)
     }
 
@@ -126,7 +130,7 @@ impl DictRepository {
         Ok(dict)
     }
 
-    pub async fn delete(&self, id:i64) -> Running<bool>{
+    pub async fn delete(&self, id: i64) -> Running<bool> {
         let mut conn = self.pool.get().await?;
         let result = conn
             .transaction::<bool, anyhow::Error, _>(|mut tx| {
@@ -134,9 +138,7 @@ impl DictRepository {
                     let result = AsyncDsl::get_result(
                         diesel::delete(DictDsl::dict)
                             .filter(DictSchema::id.eq(id))
-                            .returning(diesel::dsl::sql::<diesel::sql_types::Bool>(
-                                "true",
-                            )),
+                            .returning(diesel::dsl::sql::<diesel::sql_types::Bool>("true")),
                         &mut tx,
                     )
                     .await?;
@@ -147,14 +149,13 @@ impl DictRepository {
         Ok(result)
     }
 
-
     pub async fn count_value(&self, dict_id: &str, value_id: &str) -> Running<i64> {
         let mut conn = self.pool.get().await?;
         let total = AsyncDsl::get_result::<i64>(
             DictValueDsl::dict_value
-            .filter(DictValueDsl::dict_id.eq(dict_id))
-            .filter(DictValueDsl::value_id.eq(value_id))
-            .select(diesel::dsl::count_star()),
+                .filter(DictValueDsl::dict_id.eq(dict_id))
+                .filter(DictValueDsl::value_id.eq(value_id))
+                .select(diesel::dsl::count_star()),
             &mut conn,
         )
         .await?;
@@ -164,10 +165,13 @@ impl DictRepository {
     pub async fn find_value_by_id(&self, id: i64) -> Running<Option<DictValue>> {
         let mut conn = self.pool.get().await?;
         let dict_value = AsyncDsl::first(
-            DictValueDsl::dict_value.filter(DictValueDsl::id.eq(id)).select(DictValue::as_returning()),
+            DictValueDsl::dict_value
+                .filter(DictValueDsl::id.eq(id))
+                .select(DictValue::as_returning()),
             &mut conn,
         )
-            .await.optional()?;
+        .await
+        .optional()?;
         Ok(dict_value)
     }
 
@@ -175,12 +179,13 @@ impl DictRepository {
         let mut conn = self.pool.get().await?;
         let dict_value = AsyncDsl::first(
             DictValueDsl::dict_value
-            .filter(DictValueDsl::dict_id.eq(dict_id))
-            .filter(DictValueDsl::value_id.eq(value_id))
-            .select(DictValue::as_returning()),
+                .filter(DictValueDsl::dict_id.eq(dict_id))
+                .filter(DictValueDsl::value_id.eq(value_id))
+                .select(DictValue::as_returning()),
             &mut conn,
         )
-            .await.optional()?;
+        .await
+        .optional()?;
         Ok(dict_value)
     }
 
@@ -251,10 +256,7 @@ impl DictRepository {
         Ok(dict_value)
     }
 
-    pub async fn save_value<'a>(
-        &self,
-        insertable: &InsertableDictValue<'a>,
-    ) -> Running<DictValue> {
+    pub async fn save_value<'a>(&self, insertable: &InsertableDictValue<'a>) -> Running<DictValue> {
         let mut conn = self.pool.get().await?;
         let dict_value = conn
             .transaction::<DictValue, anyhow::Error, _>(|mut tx| {
@@ -273,7 +275,7 @@ impl DictRepository {
         Ok(dict_value)
     }
 
-    pub async fn delete_value(&self, id:i64) -> Running<bool>{
+    pub async fn delete_value(&self, id: i64) -> Running<bool> {
         let mut conn = self.pool.get().await?;
         let result = conn
             .transaction::<bool, anyhow::Error, _>(|mut tx| {
@@ -281,9 +283,7 @@ impl DictRepository {
                     let result = AsyncDsl::get_result(
                         diesel::delete(DictValueDsl::dict_value)
                             .filter(DictValueSchema::id.eq(id))
-                            .returning(diesel::dsl::sql::<diesel::sql_types::Bool>(
-                                "true",
-                            )),
+                            .returning(diesel::dsl::sql::<diesel::sql_types::Bool>("true")),
                         &mut tx,
                     )
                     .await?;

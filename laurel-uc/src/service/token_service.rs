@@ -14,15 +14,14 @@ impl TokenService {
         redis: Redis,
         exclude_paths: Vec<String>,
         exclude_start_path: Vec<String>,
-    )-> Self{
-        Self{
+    ) -> Self {
+        Self {
             redis,
             exclude_paths,
             exclude_start_path,
         }
     }
 }
-
 
 impl TokenHandler for TokenService {
     fn parse(&'_ self, token: &str) -> TokenResult<Option<Token>> {
@@ -32,23 +31,24 @@ impl TokenHandler for TokenService {
             let cache = redis.get::<Option<String>>(t.as_str()).await?;
             let payload = match cache {
                 Some(c) => {
-                    if c.is_empty(){
+                    if c.is_empty() {
                         None
-                    }else{
+                    } else {
                         Some(serde_json::from_str::<Token>(c.as_str())?)
                     }
-                },
-                None => None
+                }
+                None => None,
             };
             Ok(payload)
         })
     }
 
     fn exclude(&'_ self, url: &str) -> TokenResult<bool> {
-        let exclude = self.exclude_paths.iter().any(|path| path == url) ||
-            self.exclude_start_path.iter().any(|path| url.starts_with(path));
-        Box::pin(async move {
-            Ok(exclude)
-        })
+        let exclude = self.exclude_paths.iter().any(|path| path == url)
+            || self
+                .exclude_start_path
+                .iter()
+                .any(|path| url.starts_with(path));
+        Box::pin(async move { Ok(exclude) })
     }
 }

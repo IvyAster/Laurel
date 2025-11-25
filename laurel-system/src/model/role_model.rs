@@ -1,11 +1,11 @@
 use bon::Builder;
 use chrono::NaiveDateTime;
 use diesel::{AsChangeset, Identifiable, Insertable, Queryable, QueryableByName, Selectable};
-use serde::{Deserialize, Serialize};
 use laurel_common::enum_options;
 use laurel_common::types::{HappyEnum, SelectOption};
+use serde::{Deserialize, Serialize};
 
-pub enum RoleStatus{
+pub enum RoleStatus {
     OPEN(&'static str, &'static str),
     CLOSED(&'static str, &'static str),
     DELETED(&'static str, &'static str),
@@ -17,7 +17,7 @@ static ROLE_STATES: [RoleStatus; 3] = [
     RoleStatus::DELETED("deleted", "已删除"),
 ];
 
-impl HappyEnum<&'static str> for RoleStatus{
+impl HappyEnum<&'static str> for RoleStatus {
     fn take(&self) -> (&'static str, &'static str) {
         match self {
             RoleStatus::OPEN(x, y) | RoleStatus::CLOSED(x, y) | RoleStatus::DELETED(x, y) => (x, y),
@@ -35,11 +35,29 @@ impl HappyEnum<&'static str> for RoleStatus{
     fn find_self(key: &str) -> Option<&'static Self> {
         for item in &ROLE_STATES {
             if let Some(y) = match item {
-                &RoleStatus::OPEN(x, _) => if x == key { Some(item) } else { None },
-                &RoleStatus::CLOSED(x, _) => if x == key { Some(item) } else { None },
-                &RoleStatus::DELETED(x, _) => if x == key { Some(item) } else { None },
-            }{
-                return Some(y)
+                &RoleStatus::OPEN(x, _) => {
+                    if x == key {
+                        Some(item)
+                    } else {
+                        None
+                    }
+                }
+                &RoleStatus::CLOSED(x, _) => {
+                    if x == key {
+                        Some(item)
+                    } else {
+                        None
+                    }
+                }
+                &RoleStatus::DELETED(x, _) => {
+                    if x == key {
+                        Some(item)
+                    } else {
+                        None
+                    }
+                }
+            } {
+                return Some(y);
             }
         }
         None
@@ -53,7 +71,7 @@ impl HappyEnum<&'static str> for RoleStatus{
 #[derive(Debug, Serialize, Deserialize, Queryable, Selectable, Identifiable, QueryableByName)]
 #[diesel(table_name = crate::schema::schema::role)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
-pub struct Role{
+pub struct Role {
     pub id: i64,
     pub role_id: String,
     pub role_name: String,
@@ -67,7 +85,7 @@ pub struct Role{
 #[derive(AsChangeset)]
 #[diesel(table_name = crate::schema::schema::role)]
 #[derive(Debug, Serialize, Deserialize, Builder)]
-pub struct UpdatableRole{
+pub struct UpdatableRole {
     pub role_name: Option<String>,
     pub role_type: Option<String>,
     pub weight: Option<i32>,
@@ -77,7 +95,7 @@ pub struct UpdatableRole{
 
 #[derive(Debug, Insertable)]
 #[diesel(table_name = crate::schema::schema::role)]
-pub struct InsertableRole<'a>{
+pub struct InsertableRole<'a> {
     pub role_name: &'a str,
     pub role_type: &'a str,
     pub weight: i32,
@@ -86,7 +104,4 @@ pub struct InsertableRole<'a>{
     pub uts: NaiveDateTime,
 }
 
-
-pub struct QueryableRole{
-
-}
+pub struct QueryableRole {}

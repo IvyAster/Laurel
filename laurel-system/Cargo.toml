@@ -24,14 +24,14 @@ rand = "0.9"
 base64 = "0.22"
 sha1 = "0.10"
 uuid = { version = "1.8", features = ["v4"] }
-fred = {version="10.1", features=["i-all"]}
+fred = { version = "10.1", features = ["i-all"] }
 tokio = { version = "1.0", features = ["full"] }
 diesel = { version = "2.3", features = ["postgres", "chrono"] }
 diesel-async = { version = "0.7", features = ["postgres", "bb8"] }
 bb8 = { version = "0.9" }
 reqwest = { version = "0.12.23", features = ["json", "cookies", "multipart"], default-features = false }
 bon = "3.8"
-reqwest-middleware = { version = "0.4" , features = ["json", "multipart"]}
+reqwest-middleware = { version = "0.4", features = ["json", "multipart"] }
 #reqwest-retry = "0.4"
 
 clap = { version = "4", features = ["derive"] }
@@ -43,12 +43,12 @@ utoipa-swagger-ui = { version = "9", features = ["actix-web"] }
 laurel-common = { workspace = true }
 #laurel-handler = { workspace = true }
 laurel-uc-api = { workspace = true }
-laurel-id-api = {workspace=true}
-laurel-middleware  = {workspace=true}
-laurel-redis = {workspace=true}
-laurel-actix = {workspace=true}
-laurel-pg = {workspace=true}
-laurel-logging = {workspace=true}
+laurel-id-api = { workspace = true }
+laurel-middleware = { workspace = true }
+laurel-redis = { workspace = true }
+laurel-actix = { workspace = true }
+laurel-pg = { workspace = true }
+laurel-logging = { workspace = true }
 
 async-trait = "0.1"
 http = "1"

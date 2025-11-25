@@ -20,7 +20,7 @@ options = ""
 
 [redis_config]
 hosts = [{ host = "127.0.0.1", port = 6379 }]
-db=0
+db = 0
 
 [api_config]
 uc_service = "http://127.0.0.1:21980"

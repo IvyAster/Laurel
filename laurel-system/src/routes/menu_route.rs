@@ -1,7 +1,9 @@
-use crate::model::menu_model::{Menu, MenuActionType, MenuCreateReq, MenuQueryReq, MenuStatus, MenuType, MenuUpdateReq, MenuVo};
+use crate::model::menu_model::{
+    Menu, MenuActionType, MenuCreateReq, MenuQueryReq, MenuStatus, MenuType, MenuUpdateReq, MenuVo,
+};
 use crate::service::menu_service::MenuService;
 use actix_web::{get, post, web};
-use laurel_actix::types::{Autowired, Done, RequestBody, RequestParam, LR};
+use laurel_actix::types::{Autowired, Done, LR, RequestBody, RequestParam};
 use laurel_common::types::{HappyEnum, Pagination, SelectOption};
 
 pub fn config(cfg: &mut web::ServiceConfig) {
@@ -16,7 +18,7 @@ pub fn config(cfg: &mut web::ServiceConfig) {
             .service(list_menu_action_options)
             .service(list_menu_status_options)
             .service(update_menu)
-            .service(find_menu)
+            .service(find_menu),
     );
 }
 
@@ -25,21 +27,23 @@ async fn create_menu(
     menu_service: Autowired<MenuService>,
     req: RequestBody<MenuCreateReq>,
 ) -> Done<MenuVo> {
-    Ok(LR::of(
-        menu_service.create_menu(&req).await?.into(),
-    ))
+    Ok(LR::of(menu_service.create_menu(&req).await?.into()))
 }
 
 #[get("")]
 async fn find_menu(
     menu_service: Autowired<MenuService>,
-    req: RequestParam<MenuUpdateReq>
-) -> Done<MenuVo>{
+    req: RequestParam<MenuUpdateReq>,
+) -> Done<MenuVo> {
     Ok(LR::of_raw(
-        match menu_service.menu_repository.find_menu(req.menu_id.as_str()).await? {
+        match menu_service
+            .menu_repository
+            .find_menu(req.menu_id.as_str())
+            .await?
+        {
             Some(menu) => Some(menu.into()),
             _ => None,
-        }
+        },
     ))
 }
 
@@ -47,11 +51,9 @@ async fn find_menu(
 async fn update_menu(
     menu_service: web::Data<MenuService>,
     req: RequestBody<MenuUpdateReq>,
-) -> Done<MenuVo>{
+) -> Done<MenuVo> {
     let body = req.into_inner();
-    Ok(LR::of(
-        menu_service.update_menu(body).await?.into(),
-    ))
+    Ok(LR::of(menu_service.update_menu(body).await?.into()))
 }
 
 #[get("/state/options")]

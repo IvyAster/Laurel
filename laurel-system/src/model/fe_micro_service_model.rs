@@ -1,9 +1,9 @@
 use bon::Builder;
 use chrono::NaiveDateTime;
 use diesel::{AsChangeset, Identifiable, Insertable, Queryable, Selectable};
-use serde::{Deserialize, Serialize};
-use laurel_common::{datetime_format, enum_options};
 use laurel_common::types::{HappyEnum, IndexAble, PageQuery, SelectOption};
+use laurel_common::{datetime_format, enum_options};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Queryable, Selectable, Identifiable)]
 #[diesel(table_name = crate::schema::schema::fe_micro_service)]
@@ -36,7 +36,7 @@ pub struct UpdatableFeMicroService {
 
 #[derive(Debug, Serialize, Deserialize, Insertable)]
 #[diesel(table_name = crate::schema::schema::fe_micro_service)]
-pub struct InsertAbleFeMicroService<'a>{
+pub struct InsertAbleFeMicroService<'a> {
     pub app_id: &'a str,
     pub service_id: &'a str,
     pub service_name: &'a str,
@@ -59,14 +59,14 @@ static MICRO_SERVICE_STATES: [MicroServiceStatus; 3] = [
     MicroServiceStatus::OPEN("open", "已开启"),
     MicroServiceStatus::CLOSED("closed", "已关闭"),
     MicroServiceStatus::DELETED("deleted", "已删除"),
-
 ];
 
-
-impl HappyEnum<&'static str> for MicroServiceStatus{
+impl HappyEnum<&'static str> for MicroServiceStatus {
     fn take(&self) -> (&'static str, &'static str) {
         match self {
-            MicroServiceStatus::OPEN(x, y) | MicroServiceStatus::CLOSED(x, y) | MicroServiceStatus::DELETED(x, y) => (x, y),
+            MicroServiceStatus::OPEN(x, y)
+            | MicroServiceStatus::CLOSED(x, y)
+            | MicroServiceStatus::DELETED(x, y) => (x, y),
         }
     }
 
@@ -74,32 +74,51 @@ impl HappyEnum<&'static str> for MicroServiceStatus{
         MicroServiceStatus::find_self(key).is_some()
     }
 
-
     fn find(key: &str) -> Option<&'static str> {
-        MicroServiceStatus::find_self(key).map(|t| t.take().1).or(None)
+        MicroServiceStatus::find_self(key)
+            .map(|t| t.take().1)
+            .or(None)
     }
 
-    fn find_self(key: &str) -> Option<&'static MicroServiceStatus>{
+    fn find_self(key: &str) -> Option<&'static MicroServiceStatus> {
         for item in &MICRO_SERVICE_STATES {
             if let Some(y) = match item {
-                &MicroServiceStatus::OPEN(x, _) => if x == key { Some(item) } else { None },
-                &MicroServiceStatus::CLOSED(x, _) => if x == key { Some(item) } else { None },
-                &MicroServiceStatus::DELETED(x, _) => if x == key { Some(item) } else { None },
-            }{
-                return Some(y)
+                &MicroServiceStatus::OPEN(x, _) => {
+                    if x == key {
+                        Some(item)
+                    } else {
+                        None
+                    }
+                }
+                &MicroServiceStatus::CLOSED(x, _) => {
+                    if x == key {
+                        Some(item)
+                    } else {
+                        None
+                    }
+                }
+                &MicroServiceStatus::DELETED(x, _) => {
+                    if x == key {
+                        Some(item)
+                    } else {
+                        None
+                    }
+                }
+            } {
+                return Some(y);
             }
         }
         None
     }
 
-    fn options() -> Vec<SelectOption<&'static str, &'static str>>{
+    fn options() -> Vec<SelectOption<&'static str, &'static str>> {
         enum_options!(MICRO_SERVICE_STATES)
     }
 }
 
 #[derive(serde::Deserialize, serde::Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct FeMicroServiceVo{
+pub struct FeMicroServiceVo {
     /// 自增id
     pub index: u32,
     pub app_id: String,
@@ -114,16 +133,16 @@ pub struct FeMicroServiceVo{
     uts: String,
 }
 
-impl IndexAble for FeMicroServiceVo{
+impl IndexAble for FeMicroServiceVo {
     fn set_index(&mut self, index: u32) -> &mut Self {
         self.index = index;
         self
     }
 }
 
-impl From<FeMicroService> for FeMicroServiceVo{
+impl From<FeMicroService> for FeMicroServiceVo {
     fn from(value: FeMicroService) -> Self {
-        Self{
+        Self {
             index: 0,
             app_id: value.app_id,
             service_id: value.service_id,
@@ -165,7 +184,7 @@ pub struct FeMicroServiceCreateReq {
 
 #[derive(serde::Deserialize, serde::Serialize, Debug)]
 #[serde(rename_all = "camelCase")]
-pub struct MicroServiceUpdateReq{
+pub struct MicroServiceUpdateReq {
     pub service_id: String,
     pub service_name: Option<String>,
     pub service_entry: Option<String>,
@@ -174,8 +193,7 @@ pub struct MicroServiceUpdateReq{
     pub service_status: Option<String>,
 }
 
-
 #[test]
-fn test_find(){
+fn test_find() {
     println!("{:?}", MicroServiceStatus::find_self(&"open".to_string()))
 }

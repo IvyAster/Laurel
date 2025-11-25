@@ -1,16 +1,16 @@
-use std::collections::HashMap;
-use std::string::ToString;
 use bon::Builder;
 use chrono::NaiveDateTime;
 use diesel::{AsChangeset, Identifiable, Insertable, Queryable, QueryableByName, Selectable};
-use serde::{Deserialize, Serialize};
-use laurel_common::{datetime_format, enum_options};
 use laurel_common::types::{HappyEnum, IndexAble, PageQuery, SelectOption};
+use laurel_common::{datetime_format, enum_options};
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::string::ToString;
 
 #[derive(Debug, Serialize, Deserialize, Queryable, Selectable, Identifiable, QueryableByName)]
 #[diesel(table_name = crate::schema::schema::menu)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
-pub struct Menu{
+pub struct Menu {
     pub id: i64,
     pub app_id: String,
     pub menu_id: String,
@@ -28,12 +28,11 @@ pub struct Menu{
     pub uts: NaiveDateTime,
 }
 
-
 #[derive(AsChangeset)]
 #[diesel(table_name = crate::schema::schema::menu)]
 #[derive(Debug, Serialize, Deserialize, Builder)]
 //#[diesel(set_as_null)]
-pub struct UpdatableMenu{
+pub struct UpdatableMenu {
     pub menu_name: Option<String>,
     pub menu_action_type: Option<String>,
     pub menu_icon: Option<String>,
@@ -65,9 +64,8 @@ pub struct InsertAbleMenu<'a> {
     pub uts: &'a NaiveDateTime,
 }
 
-
 #[derive(Debug, Builder, Default)]
-pub struct MenuQuery<'a>{
+pub struct MenuQuery<'a> {
     pub app_id: &'a str,
     pub menu_id: Option<&'a str>,
     pub menu_ids: Option<&'a Vec<String>>,
@@ -80,50 +78,76 @@ pub struct MenuQuery<'a>{
     pub parent_ids: Option<&'a Vec<String>>,
     pub authority: Option<&'a str>,
     pub menu_status: Option<&'a str>,
-    pub menu_statuses: Option<&'a Vec<String>>
+    pub menu_statuses: Option<&'a Vec<String>>,
 }
 
-impl<'a> From<&'a MenuQueryReq> for MenuQuery<'a>{
+impl<'a> From<&'a MenuQueryReq> for MenuQuery<'a> {
     fn from(value: &'a MenuQueryReq) -> Self {
         let mut query = MenuQuery::default();
         query.app_id = value.app_id.as_str();
-        if let Some(param) = &value.menu_id && !param.is_empty(){
+        if let Some(param) = &value.menu_id
+            && !param.is_empty()
+        {
             query.menu_id = Some(param.as_str());
         }
-        if let Some(param) = &value.menu_ids && !param.is_empty(){
+        if let Some(param) = &value.menu_ids
+            && !param.is_empty()
+        {
             query.menu_ids = Some(param);
         }
-        if let Some(param) = &value.menu_name && !param.is_empty(){
+        if let Some(param) = &value.menu_name
+            && !param.is_empty()
+        {
             query.menu_name = Some(param.as_str());
         }
-        if let Some(param) = &value.menu_type && !param.is_empty(){
+        if let Some(param) = &value.menu_type
+            && !param.is_empty()
+        {
             query.menu_type = Some(param.as_str());
         }
-        if let Some(param) = &value.menu_types && !param.is_empty(){
+        if let Some(param) = &value.menu_types
+            && !param.is_empty()
+        {
             query.menu_types = Some(param);
         }
-        if let Some(param) = &value.menu_action_type && !param.is_empty(){
+        if let Some(param) = &value.menu_action_type
+            && !param.is_empty()
+        {
             query.menu_action_type = Some(param.as_str());
         }
-        if let Some(param) = &value.menu_route && !param.is_empty(){
+        if let Some(param) = &value.menu_route
+            && !param.is_empty()
+        {
             query.menu_route = Some(param.as_str());
         }
-        if let Some(param) = &value.parent_id && !param.is_empty(){
+        if let Some(param) = &value.parent_id
+            && !param.is_empty()
+        {
             query.menu_route = Some(param.as_str());
         }
-        if let Some(param) = &value.parent_id && !param.is_empty(){
+        if let Some(param) = &value.parent_id
+            && !param.is_empty()
+        {
             query.parent_id = Some(param);
         }
-        if let Some(param) = &value.parent_ids && !param.is_empty(){
+        if let Some(param) = &value.parent_ids
+            && !param.is_empty()
+        {
             query.parent_ids = Some(param);
         }
-        if let Some(param) = &value.authority && param.is_empty(){
+        if let Some(param) = &value.authority
+            && param.is_empty()
+        {
             query.authority = Some(param.as_str());
         }
-        if let Some(param) = &value.menu_status && !param.is_empty(){
+        if let Some(param) = &value.menu_status
+            && !param.is_empty()
+        {
             query.menu_status = Some(param.as_str());
         }
-        if let Some(param) = &value.menu_statuses && !param.is_empty(){
+        if let Some(param) = &value.menu_statuses
+            && !param.is_empty()
+        {
             query.menu_statuses = Some(param);
         }
         query
@@ -131,8 +155,8 @@ impl<'a> From<&'a MenuQueryReq> for MenuQuery<'a>{
 }
 
 #[derive(Debug, Default, Builder, Serialize, Deserialize)]
-#[serde(rename_all="camelCase")]
-pub struct MenuCreateReq{
+#[serde(rename_all = "camelCase")]
+pub struct MenuCreateReq {
     pub app_id: String,
     pub menu_name: String,
     pub menu_type: String,
@@ -147,8 +171,8 @@ pub struct MenuCreateReq{
 }
 
 #[derive(Debug, Default, Builder, Serialize, Deserialize)]
-#[serde(rename_all="camelCase")]
-pub struct MenuQueryReq{
+#[serde(rename_all = "camelCase")]
+pub struct MenuQueryReq {
     pub app_id: String,
     pub menu_id: Option<String>,
     pub menu_ids: Option<Vec<String>>,
@@ -167,8 +191,8 @@ pub struct MenuQueryReq{
 }
 
 #[derive(Debug, Default, Builder, Serialize, Deserialize)]
-#[serde(rename_all="camelCase")]
-pub struct MenuUpdateReq{
+#[serde(rename_all = "camelCase")]
+pub struct MenuUpdateReq {
     pub menu_id: String,
     pub menu_name: Option<String>,
     pub menu_action_type: Option<String>,
@@ -181,7 +205,6 @@ pub struct MenuUpdateReq{
     pub menu_status: Option<String>,
 }
 
-
 #[derive(Debug)]
 pub enum MenuStatus {
     OPEN(&'static str, &'static str),
@@ -193,10 +216,9 @@ static MENU_STATES: [MenuStatus; 3] = [
     MenuStatus::OPEN("open", "已开启"),
     MenuStatus::CLOSED("closed", "已关闭"),
     MenuStatus::DELETED("deleted", "已删除"),
-
 ];
 
-impl HappyEnum<&'static str> for MenuStatus{
+impl HappyEnum<&'static str> for MenuStatus {
     fn take(&self) -> (&'static str, &'static str) {
         match self {
             MenuStatus::OPEN(x, y) | MenuStatus::CLOSED(x, y) | MenuStatus::DELETED(x, y) => (x, y),
@@ -211,14 +233,32 @@ impl HappyEnum<&'static str> for MenuStatus{
         MenuStatus::find_self(key).map(|t| t.take().1).or(None)
     }
 
-    fn find_self(key: &str) -> Option<&'static MenuStatus>{
+    fn find_self(key: &str) -> Option<&'static MenuStatus> {
         for item in &MENU_STATES {
             if let Some(y) = match item {
-                &MenuStatus::OPEN(x, _) => if x == key { Some(item) } else { None },
-                &MenuStatus::CLOSED(x, _) => if x == key { Some(item) } else { None },
-                &MenuStatus::DELETED(x, _) => if x == key { Some(item) } else { None },
-            }{
-                return Some(y)
+                &MenuStatus::OPEN(x, _) => {
+                    if x == key {
+                        Some(item)
+                    } else {
+                        None
+                    }
+                }
+                &MenuStatus::CLOSED(x, _) => {
+                    if x == key {
+                        Some(item)
+                    } else {
+                        None
+                    }
+                }
+                &MenuStatus::DELETED(x, _) => {
+                    if x == key {
+                        Some(item)
+                    } else {
+                        None
+                    }
+                }
+            } {
+                return Some(y);
             }
         }
         None
@@ -229,21 +269,16 @@ impl HappyEnum<&'static str> for MenuStatus{
     }
 }
 
-
 #[derive(Debug, PartialEq, Eq)]
-pub enum MenuType{
+pub enum MenuType {
     MENU(&'static str, &'static str),
     BTN(&'static str, &'static str),
 }
 
+static MENU_ENUM_TYPES: [MenuType; 2] =
+    [MenuType::MENU("menu", "菜单"), MenuType::BTN("btn", "按钮")];
 
-static MENU_ENUM_TYPES: [MenuType; 2] = [
-    MenuType::MENU("menu", "菜单"),
-    MenuType::BTN("btn", "按钮"),
-];
-
-
-impl HappyEnum<&'static str> for MenuType{
+impl HappyEnum<&'static str> for MenuType {
     fn take(&self) -> (&'static str, &'static str) {
         match self {
             MenuType::MENU(x, y) | MenuType::BTN(x, y) => (x, y),
@@ -254,7 +289,6 @@ impl HappyEnum<&'static str> for MenuType{
         MenuType::find_self(key).is_some()
     }
 
-
     fn find(key: &str) -> Option<&'static str> {
         MenuType::find_self(key).map(|t| t.take().1).or(None)
     }
@@ -262,30 +296,38 @@ impl HappyEnum<&'static str> for MenuType{
     fn find_self(key: &str) -> Option<&'static Self> {
         for item in &MENU_ENUM_TYPES {
             if let Some(y) = match item {
-                &MenuType::MENU(x, _) => if x == key { Some(item) } else { None },
-                &MenuType::BTN(x, _) => if x == key { Some(item) } else { None },
-            }{
-                return Some(y)
+                &MenuType::MENU(x, _) => {
+                    if x == key {
+                        Some(item)
+                    } else {
+                        None
+                    }
+                }
+                &MenuType::BTN(x, _) => {
+                    if x == key {
+                        Some(item)
+                    } else {
+                        None
+                    }
+                }
+            } {
+                return Some(y);
             }
         }
         None
     }
 
-
     #[allow(deprecated)]
-    fn options() -> Vec<SelectOption<&'static str, &'static str>>{
+    fn options() -> Vec<SelectOption<&'static str, &'static str>> {
         enum_options!(MENU_ENUM_TYPES)
     }
 }
 
-
-
-pub enum MenuActionType{
+pub enum MenuActionType {
     ROUTE(&'static str, &'static str),
     LINK(&'static str, &'static str),
     IFRAME(&'static str, &'static str),
 }
-
 
 static MENU_ACTIONS: [MenuActionType; 3] = [
     MenuActionType::ROUTE("route", "路由"),
@@ -293,18 +335,18 @@ static MENU_ACTIONS: [MenuActionType; 3] = [
     MenuActionType::IFRAME("iframe", "iframe"),
 ];
 
-impl HappyEnum<&'static str> for MenuActionType{
-
-    fn take(&self) -> (&'static str, &'static str){
+impl HappyEnum<&'static str> for MenuActionType {
+    fn take(&self) -> (&'static str, &'static str) {
         match self {
-            MenuActionType::ROUTE(x, y) | MenuActionType::LINK(x, y) | MenuActionType::IFRAME(x, y) => (x, y),
+            MenuActionType::ROUTE(x, y)
+            | MenuActionType::LINK(x, y)
+            | MenuActionType::IFRAME(x, y) => (x, y),
         }
     }
 
     fn valid(key: &str) -> bool {
         MenuActionType::find_self(key).is_some()
     }
-
 
     fn find(key: &str) -> Option<&'static str> {
         MenuActionType::find_self(key).map(|t| t.take().1).or(None)
@@ -313,25 +355,42 @@ impl HappyEnum<&'static str> for MenuActionType{
     fn find_self(key: &str) -> Option<&'static Self> {
         for item in &MENU_ACTIONS {
             if let Some(y) = match item {
-                &MenuActionType::ROUTE(x, _) => if x == key { Some(item) } else { None },
-                &MenuActionType::LINK(x, _) => if x == key { Some(item) } else { None },
-                &MenuActionType::IFRAME(x, _) => if x == key { Some(item) } else { None },
-            }{
-                return Some(y)
+                &MenuActionType::ROUTE(x, _) => {
+                    if x == key {
+                        Some(item)
+                    } else {
+                        None
+                    }
+                }
+                &MenuActionType::LINK(x, _) => {
+                    if x == key {
+                        Some(item)
+                    } else {
+                        None
+                    }
+                }
+                &MenuActionType::IFRAME(x, _) => {
+                    if x == key {
+                        Some(item)
+                    } else {
+                        None
+                    }
+                }
+            } {
+                return Some(y);
             }
         }
         None
     }
 
-
-    fn options() -> Vec<SelectOption<&'static str, &'static str>>{
+    fn options() -> Vec<SelectOption<&'static str, &'static str>> {
         enum_options!(MENU_ACTIONS)
     }
 }
 
 #[derive(Debug, Default, Serialize, Deserialize, Clone)]
-#[serde(rename_all="camelCase")]
-pub struct MenuVo{
+#[serde(rename_all = "camelCase")]
+pub struct MenuVo {
     pub index: u32,
     pub app_id: String,
     pub menu_id: String,
@@ -354,16 +413,16 @@ pub struct MenuVo{
     pub children: Vec<MenuVo>,
 }
 
-impl IndexAble for MenuVo{
+impl IndexAble for MenuVo {
     fn set_index(&mut self, index: u32) -> &mut Self {
         self.index = index;
         self
     }
 }
 
-impl From<&Menu>  for MenuVo{
+impl From<&Menu> for MenuVo {
     fn from(value: &Menu) -> Self {
-        MenuVo{
+        MenuVo {
             index: 0,
             app_id: value.app_id.clone(),
             menu_id: value.menu_id.clone(),
@@ -388,9 +447,9 @@ impl From<&Menu>  for MenuVo{
     }
 }
 
-impl From<Menu> for MenuVo{
+impl From<Menu> for MenuVo {
     fn from(value: Menu) -> Self {
-        MenuVo{
+        MenuVo {
             index: 0,
             app_id: value.app_id,
             menu_id: value.menu_id,
@@ -421,10 +480,9 @@ struct TempNode {
     children_indices: Vec<usize>,
 }
 
-impl Menu{
-
+impl Menu {
     /// 零拷贝、纯迭代构建树（O(n) 时间，O(n) 空间）
-    pub fn build_tree(menus: Vec<Menu>) -> Vec<MenuVo>{
+    pub fn build_tree(menus: Vec<Menu>) -> Vec<MenuVo> {
         if menus.is_empty() {
             return Vec::new();
         }
@@ -433,8 +491,8 @@ impl Menu{
         let mut id_2_index: HashMap<String, usize> = HashMap::with_capacity(len);
 
         // 1. 第一次遍历：转换 Node -> TempNode（空 children），建立 id->index 映射
-        for (idx, node) in menus.iter().enumerate(){
-            temp_nodes.push(TempNode{
+        for (idx, node) in menus.iter().enumerate() {
+            temp_nodes.push(TempNode {
                 id: node.menu_id.clone(),
                 pid: node.parent_id.clone(),
                 children_indices: Vec::new(),
@@ -487,33 +545,31 @@ impl Menu{
 
         for idx in processing_order {
             let menu_id = &temp_nodes[idx].id;
-            if let Some(menu_idx) = id_2_index.get(menu_id){
+            if let Some(menu_idx) = id_2_index.get(menu_id) {
                 let menu = &menus[menu_idx.clone()];
-                let children: Vec<MenuVo> = temp_nodes[idx].children_indices
+                let children: Vec<MenuVo> = temp_nodes[idx]
+                    .children_indices
                     .iter()
-                    .filter_map(|&child_idx| {
-                        match built_vos[child_idx].take() {
-                            Some(mut m) => {
-                                m.parent_name = Some(menu.menu_name.clone());
-                                Some(m)
-                            },
-                            _ => None,
+                    .filter_map(|&child_idx| match built_vos[child_idx].take() {
+                        Some(mut m) => {
+                            m.parent_name = Some(menu.menu_name.clone());
+                            Some(m)
                         }
+                        _ => None,
                     })
                     .collect();
                 //children.sort_by(|a, b| a.weight.cmp(&b.weight));
                 let mut m = MenuVo::from(menu);
                 m.children = children;
-                if m.parent_id == m.menu_id{
+                if m.parent_id == m.menu_id {
                     m.parent_name = Some(m.menu_name.clone());
                 }
-                built_vos[idx] = Some(
-                    m
-                )
+                built_vos[idx] = Some(m)
             }
         }
         // 6. 收集根节点（完成所有权转移）
-        root_indices.into_iter()
+        root_indices
+            .into_iter()
             .filter_map(|idx| built_vos[idx].take())
             .collect()
     }
@@ -536,7 +592,11 @@ impl Menu{
             pid_to_children
                 .entry(
                     //item.parent_id.clone()
-                    if (&item.menu_id) == (&item.parent_id) { "never_leak_root".to_string() } else { item.parent_id.clone() }
+                    if (&item.menu_id) == (&item.parent_id) {
+                        "never_leak_root".to_string()
+                    } else {
+                        item.parent_id.clone()
+                    },
                 )
                 .or_insert_with(Vec::new)
                 .push(index);
@@ -568,10 +628,8 @@ impl Menu{
                 for &child_index in child_indices {
                     if !processed[child_index] {
                         // 移动子节点数据
-                        let child_node = std::mem::replace(
-                            &mut nodes[child_index],
-                            MenuVo::default()
-                        );
+                        let child_node =
+                            std::mem::replace(&mut nodes[child_index], MenuVo::default());
                         nodes[current_index].children.push(child_node);
                         stack.push(child_index);
                     }
@@ -580,10 +638,7 @@ impl Menu{
 
             // 如果是根节点，添加到最终结果
             if nodes[current_index].parent_id == nodes[current_index].menu_id {
-                let root_node = std::mem::replace(
-                    &mut nodes[current_index],
-                    MenuVo::default()
-                );
+                let root_node = std::mem::replace(&mut nodes[current_index], MenuVo::default());
                 result.push(root_node);
             }
         }
@@ -593,9 +648,12 @@ impl Menu{
 }
 
 #[test]
-fn test(){
+fn test() {
     println!("{:?}", MenuType::options());
     println!("{:?}", MenuType::find(&"menu".to_string()));
     assert_eq!(true, MenuType::valid(&"menu".to_string()));
-    assert_eq!(&MenuType::MENU("menu", "菜单"), MenuType::find_self(&"menu".to_string()).unwrap());
+    assert_eq!(
+        &MenuType::MENU("menu", "菜单"),
+        MenuType::find_self(&"menu".to_string()).unwrap()
+    );
 }

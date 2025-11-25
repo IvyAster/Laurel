@@ -1,19 +1,19 @@
 use chrono::{Local, NaiveDateTime};
 use diesel::{AsChangeset, Identifiable, Insertable, Queryable, QueryableByName, Selectable};
-use serde::{Deserialize, Serialize};
-use utoipa::IntoParams;
 use laurel_common::datetime_format;
 use laurel_common::types::PageQuery;
+use serde::{Deserialize, Serialize};
+use utoipa::IntoParams;
 
-pub enum DictType{
+pub enum DictType {
     DEFAULT(&'static str), // for d
-    CUSTOM(&'static str) // for c
+    CUSTOM(&'static str),  // for c
 }
 
 #[derive(Debug, Serialize, Deserialize, Queryable, Selectable, Identifiable, QueryableByName)]
 #[diesel(table_name = crate::schema::schema::dict)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
-pub struct Dict{
+pub struct Dict {
     pub id: i64,
     pub dict_id: String,
     pub dict_name: String,
@@ -26,7 +26,7 @@ pub struct Dict{
 
 #[derive(Debug, Insertable)]
 #[diesel(table_name = crate::schema::schema::dict)]
-pub struct InsertableDict<'a>{
+pub struct InsertableDict<'a> {
     pub dict_id: &'a str,
     pub dict_name: &'a str,
     pub dict_mark: Option<String>,
@@ -36,9 +36,9 @@ pub struct InsertableDict<'a>{
     pub uts: NaiveDateTime,
 }
 
-impl <'a> From<&'a DictCreateReq> for InsertableDict<'a>{
+impl<'a> From<&'a DictCreateReq> for InsertableDict<'a> {
     fn from(value: &'a DictCreateReq) -> Self {
-        InsertableDict{
+        InsertableDict {
             dict_id: value.dict_id.as_str(),
             dict_name: value.dict_name.as_str(),
             dict_mark: value.dict_mark.clone(),
@@ -53,7 +53,7 @@ impl <'a> From<&'a DictCreateReq> for InsertableDict<'a>{
 #[derive(AsChangeset)]
 #[diesel(table_name = crate::schema::schema::dict)]
 #[derive(Debug, Serialize, Deserialize)]
-pub struct UpdatableDict{
+pub struct UpdatableDict {
     pub dict_id: Option<String>,
     pub dict_name: Option<String>,
     pub dict_mark: Option<String>,
@@ -61,9 +61,9 @@ pub struct UpdatableDict{
     pub uts: NaiveDateTime,
 }
 
-impl From<&DictUpdateReq> for UpdatableDict{
+impl From<&DictUpdateReq> for UpdatableDict {
     fn from(value: &DictUpdateReq) -> Self {
-        UpdatableDict{
+        UpdatableDict {
             dict_id: value.dict_id.clone(),
             dict_name: value.dict_name.clone(),
             dict_mark: value.dict_mark.clone(),
@@ -74,14 +74,14 @@ impl From<&DictUpdateReq> for UpdatableDict{
 }
 
 #[derive(Debug)]
-pub struct QueryableDict<'a>{
+pub struct QueryableDict<'a> {
     pub dict_id: &'a Option<String>,
     pub dict_name: &'a Option<String>,
 }
 
-impl <'a> From<&'a DictQueryReq> for QueryableDict<'a>{
+impl<'a> From<&'a DictQueryReq> for QueryableDict<'a> {
     fn from(value: &'a DictQueryReq) -> Self {
-        QueryableDict{
+        QueryableDict {
             dict_id: &value.dict_id,
             dict_name: &value.dict_name,
         }
@@ -90,21 +90,20 @@ impl <'a> From<&'a DictQueryReq> for QueryableDict<'a>{
 
 #[derive(Debug, Default, Serialize, Deserialize, IntoParams)]
 #[into_params(style = Form, parameter_in = Query)]
-#[serde(rename_all="camelCase")]
-pub struct DictQueryReq{
+#[serde(rename_all = "camelCase")]
+pub struct DictQueryReq {
     pub dict_id: Option<String>,
     pub dict_name: Option<String>,
 
     #[serde(flatten)]
     #[param(inline)]
-    pub page: Option<PageQuery>
+    pub page: Option<PageQuery>,
 }
-
 
 #[derive(Debug, Default, Serialize, Deserialize, IntoParams, utoipa::ToSchema)]
 #[into_params(style = Form, parameter_in = Query)]
-#[serde(rename_all="camelCase")]
-pub struct DictCreateReq{
+#[serde(rename_all = "camelCase")]
+pub struct DictCreateReq {
     /// 字典id
     pub dict_id: String,
     /// 字典名称
@@ -117,8 +116,8 @@ pub struct DictCreateReq{
 
 #[derive(Debug, Default, Serialize, Deserialize, IntoParams, utoipa::ToSchema)]
 #[into_params(style = Form, parameter_in = Query)]
-#[serde(rename_all="camelCase")]
-pub struct DictDeleteReq{
+#[serde(rename_all = "camelCase")]
+pub struct DictDeleteReq {
     /// 字典自增id
     pub id: i64,
     /// 字典id
@@ -127,8 +126,8 @@ pub struct DictDeleteReq{
 
 #[derive(Debug, Default, Serialize, Deserialize, IntoParams, utoipa::ToSchema)]
 #[into_params(style = Form, parameter_in = Query)]
-#[serde(rename_all="camelCase")]
-pub struct DictUpdateReq{
+#[serde(rename_all = "camelCase")]
+pub struct DictUpdateReq {
     /// 字典自增id
     pub id: i64,
     /// 字典id
@@ -141,9 +140,9 @@ pub struct DictUpdateReq{
     pub weight: Option<i32>,
 }
 
-#[derive(Debug, Default, Serialize, Deserialize,  utoipa::ToSchema)]
-#[serde(rename_all="camelCase")]
-pub struct DictVo{
+#[derive(Debug, Default, Serialize, Deserialize, utoipa::ToSchema)]
+#[serde(rename_all = "camelCase")]
+pub struct DictVo {
     /// 字典自增id
     pub id: i64,
     /// 字典id
@@ -162,9 +161,9 @@ pub struct DictVo{
     pub uts: String,
 }
 
-impl From<Dict> for DictVo{
+impl From<Dict> for DictVo {
     fn from(value: Dict) -> Self {
-        DictVo{
+        DictVo {
             id: value.id,
             dict_id: value.dict_id,
             dict_name: value.dict_name,
@@ -177,15 +176,10 @@ impl From<Dict> for DictVo{
     }
 }
 
-
-
-
-
-
 #[derive(Debug, Serialize, Deserialize, Queryable, Selectable, Identifiable, QueryableByName)]
 #[diesel(table_name = crate::schema::schema::dict_value)]
 #[diesel(check_for_backend(diesel::pg::Pg))]
-pub struct DictValue{
+pub struct DictValue {
     pub id: i64,
     pub dict_id: String,
     pub value_id: String,
@@ -197,10 +191,9 @@ pub struct DictValue{
     pub uts: NaiveDateTime,
 }
 
-
 #[derive(Debug, Insertable)]
 #[diesel(table_name = crate::schema::schema::dict_value)]
-pub struct InsertableDictValue<'a>{
+pub struct InsertableDictValue<'a> {
     pub dict_id: &'a str,
     pub value_id: &'a str,
     pub value_name: &'a str,
@@ -211,9 +204,9 @@ pub struct InsertableDictValue<'a>{
     pub uts: NaiveDateTime,
 }
 
-impl <'a> From<&'a DictValueCreateReq> for InsertableDictValue<'a> {
+impl<'a> From<&'a DictValueCreateReq> for InsertableDictValue<'a> {
     fn from(value: &'a DictValueCreateReq) -> Self {
-        InsertableDictValue{
+        InsertableDictValue {
             dict_id: value.dict_id.as_str(),
             value_id: value.value_id.as_str(),
             value_name: value.value_name.as_str(),
@@ -229,16 +222,16 @@ impl <'a> From<&'a DictValueCreateReq> for InsertableDictValue<'a> {
 #[derive(AsChangeset)]
 #[diesel(table_name = crate::schema::schema::dict_value)]
 #[derive(Debug, Serialize, Deserialize)]
-pub struct UpdatableDictValue{
+pub struct UpdatableDictValue {
     pub value_name: Option<String>,
     pub value_mark: Option<String>,
     pub weight: Option<i32>,
     pub uts: NaiveDateTime,
 }
 
-impl From<&DictValueUpdateReq> for UpdatableDictValue{
+impl From<&DictValueUpdateReq> for UpdatableDictValue {
     fn from(value: &DictValueUpdateReq) -> Self {
-        UpdatableDictValue{
+        UpdatableDictValue {
             value_name: value.value_name.clone(),
             value_mark: value.value_mark.clone(),
             weight: value.weight.clone(),
@@ -247,18 +240,16 @@ impl From<&DictValueUpdateReq> for UpdatableDictValue{
     }
 }
 
-
-
 #[derive(Debug)]
-pub struct QueryableDictValue<'a>{
+pub struct QueryableDictValue<'a> {
     pub dict_id: &'a str,
     pub value_id: &'a Option<String>,
     pub value_name: &'a Option<String>,
 }
 
-impl <'a> From<&'a DictValueQueryReq> for QueryableDictValue<'a>{
+impl<'a> From<&'a DictValueQueryReq> for QueryableDictValue<'a> {
     fn from(value: &'a DictValueQueryReq) -> Self {
-        QueryableDictValue{
+        QueryableDictValue {
             dict_id: &value.dict_id.as_str(),
             value_id: &value.value_id,
             value_name: &value.value_name,
@@ -266,12 +257,10 @@ impl <'a> From<&'a DictValueQueryReq> for QueryableDictValue<'a>{
     }
 }
 
-
-
 #[derive(Debug, Default, Serialize, Deserialize, IntoParams)]
 #[into_params(style = Form, parameter_in = Query)]
-#[serde(rename_all="camelCase")]
-pub struct DictValueQueryReq{
+#[serde(rename_all = "camelCase")]
+pub struct DictValueQueryReq {
     /// 字典id
     pub dict_id: String,
     /// 字典值id
@@ -280,12 +269,12 @@ pub struct DictValueQueryReq{
     pub value_name: Option<String>,
     /// 分页参数
     #[serde(flatten)]
-    pub page: Option<PageQuery>
+    pub page: Option<PageQuery>,
 }
 
 #[derive(Debug, Default, Serialize, Deserialize, utoipa::ToSchema)]
-#[serde(rename_all="camelCase")]
-pub struct DictValueCreateReq{
+#[serde(rename_all = "camelCase")]
+pub struct DictValueCreateReq {
     /// 字典id
     pub dict_id: String,
     /// 字典值id
@@ -299,8 +288,8 @@ pub struct DictValueCreateReq{
 }
 
 #[derive(Debug, Default, Serialize, Deserialize, utoipa::ToSchema)]
-#[serde(rename_all="camelCase")]
-pub struct DictValueUpdateReq{
+#[serde(rename_all = "camelCase")]
+pub struct DictValueUpdateReq {
     pub id: i64,
     pub value_id: Option<String>,
     pub value_name: Option<String>,
@@ -309,15 +298,15 @@ pub struct DictValueUpdateReq{
 }
 
 #[derive(Debug, Default, Serialize, Deserialize, utoipa::ToSchema)]
-#[serde(rename_all="camelCase")]
-pub struct DictValueDeleteReq{
+#[serde(rename_all = "camelCase")]
+pub struct DictValueDeleteReq {
     pub id: i64,
     pub value_id: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, utoipa::ToSchema)]
-#[serde(rename_all="camelCase")]
-pub struct DictValueVo{
+#[serde(rename_all = "camelCase")]
+pub struct DictValueVo {
     /// 字典值自增id
     pub id: i64,
     /// 字典id
@@ -338,9 +327,9 @@ pub struct DictValueVo{
     pub uts: String,
 }
 
-impl From<DictValue> for DictValueVo{
+impl From<DictValue> for DictValueVo {
     fn from(value: DictValue) -> Self {
-        DictValueVo{
+        DictValueVo {
             id: value.id,
             dict_id: value.dict_id,
             value_id: value.value_id,

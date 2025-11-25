@@ -1,4 +1,5 @@
-CREATE DATABASE laurel_system
+CREATE
+DATABASE laurel_system
   WITH
   OWNER = admin
   ENCODING = 'UTF8'
