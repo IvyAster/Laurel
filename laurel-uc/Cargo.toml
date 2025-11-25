@@ -1,0 +1,52 @@
+[package]
+name = "laurel-uc"
+version = "0.1.0"
+edition = "2024"
+
+[features]
+use_api_docs=[]
+
+[dependencies]
+actix-web = "4"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+#sqlx = { version = "0.8", features = ["postgres", "runtime-tokio", "tls-native-tls", "macros", "chrono"] }
+chrono = { version = "0.4", features = ["serde", "clock", "std", "now"] }
+anyhow = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json", "serde_json"] }
+tracing-appender = "0.2"
+config = { version = "0.15.7", features = ["toml"] }
+percent-encoding = "2.3"
+thiserror = "2.0.17"
+actix-web-httpauth = "0.8"
+rand = "0.9"
+base64 = "0.22"
+sha1 = "0.10"
+uuid = { version = "1.8", features = ["v4"] }
+fred = {version="10.1", features=["i-all"]}
+tokio = { version = "1.0", features = ["full"] }
+diesel = { version = "2.3", features = ["postgres", "chrono"] }
+diesel-async = { version = "0.7", features = ["postgres", "bb8"] }
+bb8 = { version = "0.9" }
+reqwest = { version = "0.12.23", features = ["json", "cookies", "multipart"], default-features = false }
+reqwest-middleware = { version = "0.4" , features = ["json", "multipart"]}
+
+
+laurel-common = { workspace = true }
+#laurel-handler = { workspace = true }
+laurel-uc-api = { workspace = true }
+laurel-id-api = {workspace=true}
+laurel-middleware  = {workspace=true}
+laurel-redis = {workspace=true}
+laurel-actix = {workspace=true}
+laurel-pg = {workspace=true}
+laurel-logging = {workspace=true}
+
+[profile.release]
+opt-level = "z"
+panic = "abort"
+lto = "fat"#true
+strip = true
+codegen-units = 1
+

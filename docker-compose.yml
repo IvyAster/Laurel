@@ -1,0 +1,39 @@
+services:
+  laurel-uc:
+    image: laurel/uc:usual
+    container_name: laurel-uc
+    ports:
+      - "21980:21980"
+    restart: always
+    networks:
+      - laurel-network
+    volumes:
+      - ./uc/app.toml:/app/config/app.toml
+    extra_hosts:
+      - "pg.laurel.com:192.168.0.176"
+      - "redis.laurel.com:192.168.0.176"
+      - "id.laurel.com:192.168.0.176"
+  laurel-system:
+    image: laurel/system:usual
+    container_name: laurel-system
+    ports:
+      - "21981:21980"
+    restart: always
+    networks:
+      - laurel-network
+    volumes:
+      - ./system/app.toml:/app/config/app.toml
+    extra_hosts:
+      - "pg.laurel.com:192.168.0.176"
+      - "redis.laurel.com:192.168.0.176"
+      - "id.laurel.com:192.168.0.176"
+networks:
+  laurel-network:
+    name: laurel-network
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: "178.20.0.0/16"
+          ip_range: "178.20.5.0/24"
+          gateway: "178.20.5.1"

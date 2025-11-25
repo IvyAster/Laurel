@@ -1,0 +1,53 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/handler",
+    "crates/common",
+    "crates/uc-api",
+    "crates/id-api",
+    "laurel-uc",
+    "laurel-system",
+    "crates/middleware",
+    "crates/redis",
+    "crates/actix",
+    "crates/logging",
+    "crates/pg"
+]
+
+[workspace.package]
+edition = "2024"
+version = "0.5.2"
+license = "MIT"
+license-file = "LICENSE"
+authors = ["zhangyebai@hotmail.com"]
+readme = "README.md"
+repository = ""
+
+[workspace.dependencies]
+#
+# satex dependencies
+#
+laurel-common = { path = "crates/common", version = "1.0.0" }
+#laurel-handler = { path = "crates/handler", version = "1.0.0" }
+laurel-uc-api = { path = "crates/uc-api", version="1.0.0" }
+laurel-id-api = {path = "crates/id-api", version="1.0.0"}
+laurel-middleware = {path = "crates/middleware", version="1.0.0"}
+laurel-redis = {path = "crates/redis", version="1.0.0"}
+laurel-actix = {path = "crates/actix", version="1.0.0"}
+laurel-logging = {path = "crates/logging", version="1.0.0"}
+laurel-pg = {path = "crates/pg", version="1.0.0"}
+#
+# third-party dependencies
+#
+
+
+
+#[dependencies]
+
+
+[profile.release]
+opt-level = "z"
+panic = "abort"
+lto = true
+strip = true
+#SQLX_OFFLINE=true

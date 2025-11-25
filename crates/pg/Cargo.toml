@@ -1,0 +1,25 @@
+[package]
+name = "laurel-pg"
+description = "Laurel PostgreSQL"
+version = "1.0.0"
+edition = "2024"
+
+
+[dependencies]
+#laurel-common = { workspace = true }
+actix-web = "4"
+thiserror = "2.0.17"
+serde_json = "1.0"
+anyhow = "1"
+#sqlx = { version = "0.8", features = ["postgres", "runtime-tokio", "tls-native-tls", "macros", "chrono"] }
+percent-encoding = "2.3"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json", "serde_json"] }
+tracing-appender = "0.2"
+serde = { version = "1.0", features = ["derive"] }
+fred = {version="10.1", features=["i-redis-json"]}
+tokio = { version = "1.0", features = ["full"] }
+
+diesel = { version = "2.3", features = ["postgres", "chrono"] }
+diesel-async = { version = "0.7", features = ["postgres", "async-connection-wrapper", "bb8"] }
+bb8={version="0.9"}

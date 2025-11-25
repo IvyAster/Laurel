@@ -1,0 +1,27 @@
+[server_config]
+host = "0.0.0.0"
+port = 8080
+
+[log_config]
+level = "info"
+location = "logs"
+prefix = "laurel-system"
+appender = "console" #console file all
+
+[db_config]
+host = "127.0.0.1"
+port = 5432
+user = "admin"
+password = "admin"
+database = "laurel_system"
+max_connections = 30
+min_connections = 15
+options = ""
+
+[redis_config]
+hosts = [{ host = "127.0.0.1", port = 6379 }]
+db=0
+
+[api_config]
+uc_service = "http://127.0.0.1:21980"
+id_service = "http://127.0.0.1:18080"

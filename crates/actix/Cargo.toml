@@ -1,0 +1,22 @@
+[package]
+name = "laurel-actix"
+description = "Laurel Actix"
+version = "1.0.0"
+edition = "2024"
+
+
+[dependencies]
+actix-web = "4"
+thiserror = "2.0.17"
+serde_json = "1.0"
+anyhow = "1"
+#futures-util = "0.3"
+actix-web-httpauth = "0.8"
+#actix-web-validation="0.8"
+tracing = "0.1"
+#regex = "1.9"
+#lazy_static = "1.5.0"
+#fred = {version="10.1", features=["i-all"]}
+serde = { version = "1.0", features = ["derive"] }
+clap = { version = "4", features = ["derive"] }
+config = { version = "0.15.7", features = ["toml"] }
