@@ -2,7 +2,6 @@ use std::env::VarError;
 use clap::Parser;
 use config::{Config, Environment, File};
 use serde::Deserialize;
-use crate::types::Running;
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -18,14 +17,16 @@ pub struct AppArgs{
 }
 
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct ServerConfig {
     pub host: String,
     pub port: u16,
+    pub excludes: Option<Vec<String>>,
+    pub exclude_starts: Option<Vec<String>>,
 }
 
 
-pub fn load(env: Option<String>, path: Option<String>) -> Running<config::Config>{
+pub fn load(env: Option<String>, path: Option<String>) -> anyhow::Result<config::Config>{
     let env_path = match env {
         Some(p) => std::env::var(p),
         None => Err(VarError::NotPresent),
@@ -52,7 +53,7 @@ pub fn load(env: Option<String>, path: Option<String>) -> Running<config::Config
     Ok(config)
 }
 
-pub fn load_config<'de, T: Deserialize<'de>>(env: Option<String>, path: Option<String>) -> Running<T>{
+pub fn load_config<'de, T: Deserialize<'de>>(env: Option<String>, path: Option<String>) -> anyhow::Result<T>{
     let config = load(env, path)?;
     Ok(config.try_deserialize()?)
 }

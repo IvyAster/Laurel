@@ -1,0 +1,25 @@
+[server_config]
+host = "0.0.0.0"
+port = 8080
+exclude_starts=[
+    "/interface"
+]
+[log_config]
+level = "info"
+location = "logs"
+prefix = "laurel-logs"
+appender = "console" #console file all
+
+[db_config]
+host = "127.0.0.1"
+port = 5432
+user = "admin"
+password = "admin"
+database = "laurel_logs"
+max_connections = 30
+min_connections = 15
+options = ""
+
+[api_config]
+uc_service = "http://127.0.0.1:21980"
+id_service = "http://127.0.0.1:18080"

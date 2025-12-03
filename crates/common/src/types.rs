@@ -1,64 +1,57 @@
 use serde::{Deserialize, Serialize};
 use utoipa::{IntoParams, ToSchema};
 
-pub type ApiResult<T> = Result<LrApi<T>, anyhow::Error>;
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct LrApi<T> {
-    /// 业务状态码
-    pub code: u16,
-    /// 响应消息
-    pub message: String,
-    /// 响应数据
-    pub data: Option<T>,
-}
+#[allow(dead_code, unused)]
+pub mod api{
+    use serde::{Deserialize, Serialize};
 
-static SUCCESS: &str = "success";
-static ERROR: &str = "error";
+    pub type Result<T> = core::result::Result<ApiResult<T>, anyhow::Error>;
+    static SUCCESS: &str = "success";
+    static ERROR: &str = "error";
 
-static SUCCESS_CODE: u16 = 200;
-static ERROR_CODE: u16 = 500;
+    static SUCCESS_CODE: u16 = 200;
+    static ERROR_CODE: u16 = 500;
 
-impl <T> LrApi<T> {
-
-    pub fn new(code: u16, message: &str, data: Option<T>) -> Self {
-        Self {code, message: message.to_string(), data}
+    #[derive(Debug, Serialize, Deserialize)]
+    pub struct ApiResult<T>{
+        /// 业务状态码
+        pub code: u16,
+        /// 响应消息
+        pub message: String,
+        /// 响应数据
+        pub data: Option<T>,
     }
 
-    pub fn of(data: T) -> Self {
-        Self::of_raw( Some(data))
+    impl <T> From<anyhow::Error> for ApiResult<T> {
+        fn from(value: anyhow::Error) -> Self {
+            ApiResult{
+                code: ERROR_CODE,
+                message: value.to_string(),
+                data: None,
+            }
+        }
     }
 
-    pub fn error_code(code: u16) -> Self {
-        Self{code, message: ERROR.to_string(), data: None}
+    impl <T> ApiResult<T>{
+        pub fn is_successful_with_code(&self, code: u16) -> bool {
+            self.code == code
+        }
+
+        pub fn is_successful(&self) -> bool {
+            self.is_successful_with_code(SUCCESS_CODE)
+        }
+
+        pub fn of(code: u16, message: String, data: Option<T>) -> Self{
+            Self{code, message, data}
+        }
     }
 
-    pub fn error_message(message: &str) -> Self {
-        Self{code: ERROR_CODE, message: message.to_string(), data: None}
-    }
-
-    pub fn without_data(code: u16, message: &str) -> Self {
-        Self{code, message: message.to_string(), data: None}
-    }
-
-
-
-    pub fn of_raw(data: Option<T>) -> Self {
-        Self {code: SUCCESS_CODE, message: SUCCESS.to_string(), data}
-    }
-
-    pub fn default() -> Self {
-        Self {code: SUCCESS_CODE, message: SUCCESS.to_string(), data: None}
-    }
-
-    pub fn is_successful_with_code(&self, code: u16) -> bool {
-        self.code == code
-    }
-
-    pub fn is_successful(&self) -> bool {
-        self.is_successful_with_code(SUCCESS_CODE)
+    pub trait ApiUrl{
+        fn url(&self, uri: &str);
     }
 }
+
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 #[serde(rename_all="camelCase")]

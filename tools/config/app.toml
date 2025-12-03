@@ -1,0 +1,22 @@
+[server_config]
+host = "0.0.0.0"
+port = 8080
+exclude_starts=["/interface"]
+
+[log_config]
+level = "info"
+location = "logs"
+prefix = "laurel-tools"
+appender = "console"
+
+
+[redis_config]
+hosts = [{ host = "127.0.0.1", port = 6379 }]
+db = 0
+
+[ip_config]
+ip_v4 = "./config/ip2region_v4.xdb"
+ip_v6 = "./config/ip2region_v4.xdb"
+
+[ua_config]
+path = "./config/regexes.yaml"

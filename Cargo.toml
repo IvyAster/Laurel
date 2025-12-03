@@ -5,13 +5,16 @@ members = [
     "crates/common",
     "crates/uc-api",
     "crates/id-api",
-    "laurel-uc",
-    "laurel-system",
+    "crates/tool-api",
+    "logs",
+    "system",
+    "tools",
     "crates/middleware",
     "crates/redis",
     "crates/actix",
     "crates/logging",
-    "crates/pg"
+    "crates/pg",
+    "crates/logs-api",
 ]
 
 [workspace.package]
@@ -36,6 +39,8 @@ laurel-redis = {path = "crates/redis", version="1.0.0"}
 laurel-actix = {path = "crates/actix", version="1.0.0"}
 laurel-logging = {path = "crates/logging", version="1.0.0"}
 laurel-pg = {path = "crates/pg", version="1.0.0"}
+laurel-tool-api = {path = "crates/tool-api", version="1.0.0"}
+laurel-logs-api = {path = "crates/logs-api", version="1.0.0"}
 #
 # third-party dependencies
 #

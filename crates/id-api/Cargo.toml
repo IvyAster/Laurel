@@ -12,3 +12,4 @@ laurel-common = { workspace = true }
 anyhow = "1"
 bon = "3.8"
 reqwest-middleware = { version = "0.4" , features = ["json", "multipart"]}
+laurel-middleware = { workspace = true }

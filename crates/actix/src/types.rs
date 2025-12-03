@@ -1,14 +1,123 @@
-use std::string::ToString;
-use actix_web::{web, HttpRequest, HttpResponse, Responder};
-use anyhow::Error;
-use serde::{Deserialize, Serialize};
-use crate::error::AppError;
+use actix_web::{web};
+
+
+
+pub mod route{
+    pub use crate::error::AppError;
+    pub type Result<T> = core::result::Result<crate::types::common::ApiResult<T>, AppError>;
+
+    #[allow(non_snake_case)]
+    #[macro_export]
+    macro_rules! Data {
+        ($value: expr) => {
+            Ok(
+                laurel_actix::types::common::ApiResult::of(
+                    $value
+                )
+            )
+        };
+    }
+}
+
+pub mod service{
+    pub type Result<T> = core::result::Result<T, anyhow::Error>;
+}
+
+pub mod repository{
+    pub type Result<T> = core::result::Result<T, anyhow::Error>;
+}
+
+pub mod common{
+    use actix_web::{HttpRequest, HttpResponse, Responder};
+    use serde::{Deserialize, Serialize};
+
+    pub trait IntoOption<T>{
+        fn into_option(self) -> Option<T>;
+    }
+
+    impl <T> IntoOption<T> for Option<T>{
+        fn into_option(self) -> Option<T> {
+            self
+        }
+    }
+
+    impl<T> IntoOption<T> for T {
+        fn into_option(self) -> Option<T> {
+            Some(self)
+        }
+    }
+
+    #[derive(Debug, Serialize, Deserialize)]
+    pub struct ApiResult<T>{
+        /// 业务状态码
+        pub code: u16,
+        /// 响应消息
+        pub message: String,
+        /// 响应数据
+        pub data: Option<T>,
+    }
+
+    static SUCCESS: &str = "success";
+    static ERROR: &str = "error";
+
+    static SUCCESS_CODE: u16 = 200;
+    static ERROR_CODE: u16 = 500;
+
+    impl <T> ApiResult<T> {
+        pub fn of<U>(data: U) -> Self
+        where
+            U: IntoOption<T>, // 约束入参必须能转为 Option<T>
+        {
+            ApiResult {
+                code: SUCCESS_CODE,
+                message: SUCCESS.to_string(),
+                data: data.into_option(),
+            }
+        }
+
+        pub fn new(code: u16, message: &str, data: Option<T>) -> Self {
+            Self {code, message: message.to_string(), data}
+        }
+
+        pub fn error_code(code: u16) -> Self {
+            Self{code, message: ERROR.to_string(), data: None}
+        }
+
+        pub fn error_message(message: &str) -> Self {
+            Self{code: ERROR_CODE, message: message.to_string(), data: None}
+        }
+
+        pub fn without_data(code: u16, message: &str) -> Self {
+            Self{code, message: message.to_string(), data: None}
+        }
+
+        pub fn default() -> Self {
+            Self {code: SUCCESS_CODE, message: SUCCESS.to_string(), data: None}
+        }
+
+        pub fn is_successful_with_code(&self, code: u16) -> bool {
+            self.code == code
+        }
+
+        pub fn is_successful(&self) -> bool {
+            self.is_successful_with_code(SUCCESS_CODE)
+        }
+    }
+
+    impl <T: Serialize> Responder for ApiResult<T>{
+        type Body = actix_web::body::BoxBody;
+
+        fn respond_to(self, _req: &HttpRequest) -> HttpResponse<Self::Body> {
+            HttpResponse::Ok().json(self)
+        }
+    }
+}
 
 // on way data processing
-pub type Running<T, E = Error> =  anyhow::Result<T, E>;
+//pub type Running<T, E = Error> =  anyhow::Result<T, E>;
 
 // ending data processing
-pub type Done<T, E = AppError> = Result<LR<T>, E>;
+//pub type Done<T, E = AppError> = Result<LR<T>, E>;
 
 //用于从应用程序状态中共享数据。通常用于在多个处理器之间共享数据库连接池、配置等。
 //T 必须是实现了 Send + Sync 的类型，因为多个线程可能同时访问它。
@@ -43,72 +152,4 @@ pub type RequestForm<T> = web::Form<T>;
 pub type RequestExtension<T> = web::ReqData<T>;
 
 //用于从 application/x-www-form-urlencoded 格式的请求体中提取数据。通常用于处理 HTML 表单提交。
-//pub type WebForm<T> = web::Form<T>;
-
-
-
-// for laurel result
-#[derive(Debug, Serialize, Deserialize)]
-pub struct LR<T> {
-    /// 业务状态码
-    pub code: u16,
-    /// 响应消息
-    pub message: String,
-    /// 响应数据
-    pub data: Option<T>,
-}
-
-static SUCCESS: &str = "success";
-static ERROR: &str = "error";
-
-static SUCCESS_CODE: u16 = 200;
-static ERROR_CODE: u16 = 500;
-
-impl <T> LR<T> {
-
-    pub fn new(code: u16, message: &str, data: Option<T>) -> Self {
-        Self {code, message: message.to_string(), data}
-    }
-
-    pub fn of(data: T) -> Self {
-        Self::of_raw( Some(data))
-    }
-
-    pub fn error_code(code: u16) -> Self {
-        Self{code, message: ERROR.to_string(), data: None}
-    }
-
-    pub fn error_message(message: &str) -> Self {
-        Self{code: ERROR_CODE, message: message.to_string(), data: None}
-    }
-
-    pub fn without_data(code: u16, message: &str) -> Self {
-        Self{code, message: message.to_string(), data: None}
-    }
-
-
-
-    pub fn of_raw(data: Option<T>) -> Self {
-        Self {code: SUCCESS_CODE, message: SUCCESS.to_string(), data}
-    }
-
-    pub fn default() -> Self {
-        Self {code: SUCCESS_CODE, message: SUCCESS.to_string(), data: None}
-    }
-
-    pub fn is_successful_with_code(&self, code: u16) -> bool {
-        self.code == code
-    }
-
-    pub fn is_successful(&self) -> bool {
-        self.is_successful_with_code(SUCCESS_CODE)
-    }
-}
-
-impl <T: Serialize> Responder for LR<T>{
-    type Body = actix_web::body::BoxBody;
-
-    fn respond_to(self, _req: &HttpRequest) -> HttpResponse<Self::Body> {
-        HttpResponse::Ok().json(self)
-    }
-}
+pub type WebForm<T> = web::Form<T>;

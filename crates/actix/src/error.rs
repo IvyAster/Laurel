@@ -2,7 +2,7 @@ use actix_web::{HttpResponse, ResponseError};
 use actix_web::http::StatusCode;
 use thiserror::Error;
 use tracing::log::error;
-use crate::types::LR;
+use crate::types::{common};
 
 // 自定义应用错误枚举
 #[derive(Debug, Error)]
@@ -35,14 +35,14 @@ impl ResponseError for AppError {
         let result = match self {
             AppError::ActixWeb(err) => {
                 error!("error: {}", err);
-                LR::<()>::error_message(&err.to_string())
+                common::ApiResult::<()>::error_message(&err.to_string())
             },
-            AppError::AuthError(err) => LR::<()>::without_data(401, &err.to_string()),
-            AppError::NotFound => LR::<()>::without_data(404, "resource not found"),
-            AppError::InternalServerError => LR::<()>::without_data(500, "server error"),
+            AppError::AuthError(err) => common::ApiResult::<()>::without_data(401, &err.to_string()),
+            AppError::NotFound => common::ApiResult::<()>::without_data(404, "resource not found"),
+            AppError::InternalServerError => common::ApiResult::<()>::without_data(500, "server error"),
             AppError::AnyhowError(err) => {
                 error!("error: {}", err);
-                LR::<()>::error_message(&err.to_string())
+                common::ApiResult::<()>::error_message(&err.to_string())
             },
         };
         HttpResponse::build(StatusCode::OK)

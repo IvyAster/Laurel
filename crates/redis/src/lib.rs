@@ -1,4 +1,5 @@
 use std::time::Duration;
+use anyhow::anyhow;
 use tracing::info;
 
 pub use fred::prelude::*;
@@ -118,11 +119,13 @@ impl Redis {
         )
     }
 
-    pub async fn set<V>(&self, key: &str, value: V) -> Result<(), Error>
+    pub async fn set<V>(&self, key: &str, value: V) -> Result<(), anyhow::Error>
     where V: TryInto<Value> + Send,
           V::Error: Into<Error> + Send,
     {
-        let _: () = self.0.set::<(), &str, V>(key, value, None, None, false).await?;
+        let _: () = self.0.set::<(), &str, V>(key, value, None, None, false)
+            .await
+            .map_err(|e| anyhow!(e.to_string()))?;
         Ok(())
     }
 
@@ -147,7 +150,7 @@ impl Redis {
 
 
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct RedisConfig{
 
     // single cluster sentinel
@@ -173,6 +176,7 @@ pub struct RedisConfig{
 }
 
 #[derive(Debug, Deserialize)]
+#[derive(Clone)]
 pub struct RedisHost{
     pub host: String,
     pub port: u16,

@@ -1,42 +1,9 @@
-use chrono::{DateTime, Local, Utc};
 
+pub static DTF: &'static str = "%Y-%m-%d %H:%M:%S";
+pub static DTF_CN: &'static str = "%Y年%m月%d日 %H时%M分%S秒";
 
+pub static DF: &'static str = "%Y-%m-%d";
+pub static DF_CN: &'static str = "%Y年%m月%d日";
 
-#[macro_export]
-macro_rules! datetime_format {
-    ($dt: expr) => {
-        $dt.format("%Y-%m-%d %H:%M:%S").to_string()
-    };
-    ($dt: expr, $format: expr) => {
-        $dt.format($format).to_string()
-    };
-}
-
-#[macro_export]
-macro_rules! time_format {
-    ($dt: expr) => {
-        $dt.format("%H:%M:%S").to_string()
-    };
-    ($dt: expr, $format: expr) => {
-        $dt.format($format).to_string()
-    };
-}
-
-#[macro_export]
-macro_rules! date_format {
-    ($dt: expr) => {
-        $dt.format("%Y-%m-%d").to_string()
-    };
-    ($dt: expr, $format: expr) => {
-        $dt.format($format).to_string()
-    };
-}
-
-#[macro_export]
-macro_rules! local_now {
-    ($dt: ident) => {
-        $dt::now().naive_local()
-    };
-}
-
-//#[allow(non_snake_case)]
+pub static TF: &'static str = "%H:%M:%S";
+pub static TF_CN: &'static str = "%H时%M分%S秒";

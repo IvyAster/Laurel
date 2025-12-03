@@ -6,7 +6,8 @@
 # 配置
 IMAGE_NAME="laurel/${1}"
 IMAGE_TAG="${2:-usual}"
-DOCKERFILE="Dockerfile"
+DOCKERFILE="Dockerfile-alpine"
+FEATURES_PARAMS="${3}"
 
 echo "🔨 构建 Docker 镜像..."
 echo "镜像: ${IMAGE_NAME}:${IMAGE_TAG}"
@@ -19,6 +20,7 @@ docker build \
     -t "${IMAGE_NAME}:${IMAGE_TAG}" \
     -f "$DOCKERFILE" \
     --build-arg APP_NAME="${1}" \
+    --build-arg FEATURES="${FEATURES_PARAMS}" \
     .
 
 echo "✅ 构建完成!"
